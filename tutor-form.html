@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART Tutor Signup | Tech Courses Nigeria</title>
+    <!-- Styles and Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Polyfills for Fetch and FormData -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.6.2/fetch.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/formdata-polyfill/4.0.10/formdata.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            margin: 24px auto;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+        label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 60%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        .password-toggle:hover {
+            color: #4b5563;
+        }
+        .input-error {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+        .input-valid {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .error-message, .valid-message {
+            font-size: 0.75rem;
+            color: #dc2626;
+            margin-top: 0.25rem;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+        .error-message.show, .valid-message.opacity-100 {
+            opacity: 1;
+            max-height: 3rem;
+        }
+        .password-strength {
+            height: 6px;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+        .password-strength.bg-red-500 {
+            background-color: #dc2626;
+        }
+        .password-strength.bg-yellow-500 {
+            background-color: #f59e0b;
+        }
+        .password-strength.bg-green-500 {
+            background-color: #10b981;
+        }
+        #password-strength-text {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        #submit-btn:not(:disabled) {
+            background-color: #4f46e5;
+            color: white;
+            transition: background-color 0.2s ease;
+        }
+        #submit-btn:not(:disabled):hover {
+            background-color: #4338ca;
+        }
+        #selected-course-display {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        #change-course-btn {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #4f46e5;
+            transition: color 0.2s ease;
+        }
+        #change-course-btn:hover {
+            color: #4338ca;
+            text-decoration: underline;
+        }
+        .spinner {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .spinner-content {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            max-width: 300px;
+            text-align: center;
+        }
+        .spinner-circle {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #4f46e5;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        .spinner-text {
+            font-size: 1rem;
+            margin-top: 1rem;
+            color: #4f46e5;
+            font-family: 'Fira Code', monospace;
+        }
+        #success-modal, #failure-modal {
+            padding: 1rem;
+        }
+        #success-modal .bg-white, #failure-modal .bg-white {
+            padding: 2rem;
+            max-width: 400px;
+            border-radius: 12px;
+        }
+        #success-modal-btn, #failure-modal-btn {
+            background-color: #4f46e5;
+            padding: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        #success-modal-btn:hover, #failure-modal-btn:hover {
+            background-color: #4338ca;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media (max-width: 650px) {
+            .card {
+                padding: 20px;
+                margin: 16px auto;
+                max-width: 95%;
+            }
+            .card h2 {
+                font-size: 1.75rem;
+            }
+            .error-message, .valid-message {
+                font-size: 0.8125rem;
+            }
+            .spinner-circle {
+                width: 32px;
+                height: 32px;
+            }
+            .spinner-text {
+                font-size: 0.875rem;
+            }
+            #success-modal .bg-white, #failure-modal .bg-white {
+                padding: 1.5rem;
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Signup Form Section -->
+    <div class="card bg-white rounded-xl shadow-md">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">Enrollment Form</h2>
+
+        <div id="selected-course-display" class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-6 rounded hidden">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-indigo-800 text-sm sm:text-base" id="selected-course-name">Course Name</h3>
+                </div>
+                <button id="change-course-btn" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">Change</button>
+            </div>
+        </div>
+
+        <form id="signup-form" class="space-y-4" novalidate>
+            <!-- Full Name -->
+            <div>
+                <label for="fullname" class="block">Full Name</label>
+                <input type="text" id="fullname" name="fullname" class="w-full" placeholder="Your Name" aria-describedby="fullname-error" required autofocus>
+                <div class="error-message" id="fullname-error">Please enter your full name</div>
+                <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="fullname-valid">Looks good!</div>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="email" class="block">Email Address</label>
+                <input type="email" id="email" name="email" class="w-full" placeholder="zion@example.com" aria-describedby="email-error" required>
+                <div class="error-message" id="email-error">Please enter a valid email address</div>
+                <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="email-valid">Looks good!</div>
+            </div>
+
+            <!-- Phone -->
+            <div>
+                <label for="phone" class="block">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="w-full" placeholder="08012345678" aria-describedby="phone-error" required>
+                <div class="error-message" id="phone-error">Please enter a valid Nigerian phone number</div>
+                <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="phone-valid">Looks good!</div>
+            </div>
+
+            <!-- Password -->
+            <div class="relative">
+                <label for="password" class="block">Password</label>
+                <input type="password" id="password" name="password" class="w-full" placeholder="At least 8 characters" aria-describedby="password-error" required>
+                <div class="password-toggle" id="toggle-password" aria-label="Toggle password visibility">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                </div>
+                <div class="error-message" id="password-error">Password must be at least 8 characters</div>
+                <div class="mt-2">
+                    <div class="flex space-x-1">
+                        <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-1"></div>
+                        <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-2"></div>
+                        <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-3"></div>
+                        <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-4"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1" id="password-strength-text">Password strength</p>
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="relative">
+                <label for="confirm-password" class="block">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirm-password" class="w-full" placeholder="Confirm your password" aria-describedby="confirm-password-error" required>
+                <div class="password-toggle" id="toggle-confirm-password" aria-label="Toggle confirm password visibility">
+                    <i class="far fa-eye" aria-hidden="true"></i>
+                </div>
+                <div class="error-message" id="confirm-password-error">Passwords do not match</div>
+            </div>
+
+            <!-- Course You Are Skilled In -->
+            <div>
+                <label for="skilled-course" class="block">Course You Are Skilled In</label>
+                <select id="skilled-course" name="skilled-course" class="w-full" required>
+                    <option value="" disabled selected>Select a course</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Data Science">Data Science</option>
+                    <option value="Mobile App Development">Mobile App Development</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="UI/UX Design">UI/UX Design</option>
+                </select>
+                <div class="error-message" id="skilled-course-error">Please select a course</div>
+                <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="skilled-course-valid">Looks good!</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button type="submit" id="submit-btn" class="w-full bg-gray-300 text-gray-500 font-bold py-3 px-4 rounded-lg cursor-not-allowed flex items-center justify-center" disabled>
+                    <span id="submit-text">Select a course to continue</span>
+                    <svg id="submit-spinner" class="hidden h-5 w-5 animate-spin text-white ml-2" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-6 text-center text-sm text-gray-500">
+            <p>Already have an account? <a href="./Login.html" class="text-indigo-600 hover:text-indigo-800 font-medium">Log in</a></p>
+        </div>
+    </div>
+
+    <!-- Spinner -->
+    <div class="spinner" id="loading-spinner">
+        <div class="spinner-content">
+            <div class="spinner-circle"></div>
+            <p class="spinner-text">Processing...</p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="success-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-check text-green-500 text-2xl" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h3 id="success-title" class="text-xl font-bold text-gray-800 mb-2">Signup Successful!</h3>
+            <p class="text-gray-700 text-base mb-6">Thank you for enrolling. Check your email for verification.</p>
+            <button id="success-modal-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg transition">Continue to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Failure Modal -->
+    <div id="failure-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="failure-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-times text-red-500 text-2xl" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h3 id="failure-title" class="text-xl font-bold text-gray-800 mb-2">Error</h3>
+            <p class="text-gray-700 text-base mb-6" id="failure-message">There was an issue processing your submission. Please try again.</p>
+            <button id="failure-modal-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg transition">Try Again</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const courseButtons = document.querySelectorAll('.select-course-btn');
+            const selectedCourseDisplay = document.getElementById('selected-course-display');
+            const selectedCourseName = document.getElementById('selected-course-name');
+            const changeCourseBtn = document.getElementById('change-course-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const submitSpinner = document.getElementById('submit-spinner');
+            const form = document.getElementById('signup-form');
+            const fullname = document.getElementById('fullname');
+            const email = document.getElementById('email');
+            const phone = document.getElementById('phone');
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm-password');
+            const skilledCourse = document.getElementById('skilled-course');
+            const fullnameError = document.getElementById('fullname-error');
+            const emailError = document.getElementById('email-error');
+            const phoneError = document.getElementById('phone-error');
+            const passwordError = document.getElementById('password-error');
+            const confirmPasswordError = document.getElementById('confirm-password-error');
+            const skilledCourseError = document.getElementById('skilled-course-error');
+            const fullnameValid = document.getElementById('fullname-valid');
+            const emailValid = document.getElementById('email-valid');
+            const phoneValid = document.getElementById('phone-valid');
+            const skilledCourseValid = document.getElementById('skilled-course-valid');
+            const strengthBars = [
+                document.getElementById('strength-1'),
+                document.getElementById('strength-2'),
+                document.getElementById('strength-3'),
+                document.getElementById('strength-4')
+            ];
+            const strengthText = document.getElementById('password-strength-text');
+            const successModal = document.getElementById('success-modal');
+            const failureModal = document.getElementById('failure-modal');
+            const successModalBtn = document.getElementById('success-modal-btn');
+            const failureModalBtn = document.getElementById('failure-modal-btn');
+            const failureMessage = document.getElementById('failure-message');
+            const togglePassword = document.getElementById('toggle-password');
+            const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+            const loadingSpinner = document.getElementById('loading-spinner');
+
+            let selectedCourse = null;
+
+            // Debounce utility function
+            const debounce = (func, wait) => {
+                let timeout;
+                return function (...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            };
+
+            // Show/Hide Error
+            const showError = (input, errorElement, message) => {
+                input.classList.add('input-error', 'shake');
+                input.classList.remove('input-valid');
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+                setTimeout(() => input.classList.remove('shake'), 500);
+            };
+
+            const hideError = (input, errorElement) => {
+                input.classList.remove('input-error', 'shake');
+                errorElement.classList.remove('show');
+            };
+
+            const showValid = (input, validElement) => {
+                input.classList.add('input-valid');
+                input.classList.remove('input-error', 'shake');
+                validElement.classList.add('opacity-100', 'max-h-20');
+                input.nextElementSibling.classList.remove('show');
+            };
+
+            // Update submit button state
+            const updateSubmitButton = () => {
+                if (selectedCourse) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    submitBtn.classList.add('bg-indigo-600', 'text-white', 'cursor-pointer');
+                    submitText.textContent = 'Submit';
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                    submitBtn.classList.remove('bg-indigo-600', 'text-white', 'cursor-pointer');
+                    submitText.textContent = 'Select a course to continue';
+                }
+            };
+
+            // Course selection
+            document.querySelector('#courses')?.addEventListener('click', (e) => {
+                if (e.target.classList.contains('select-course-btn')) {
+                    const button = e.target;
+                    selectedCourse = button.dataset.course;
+                    const courseTitle = button.closest('.course-card')?.querySelector('h3')?.textContent || 'Unknown Course';
+                    selectedCourseName.textContent = courseTitle;
+                    selectedCourseDisplay.classList.remove('hidden');
+                    document.querySelectorAll('.course-card').forEach(card => card.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-200'));
+                    button.closest('.course-card')?.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-200');
+                    updateSubmitButton();
+                    form.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+
+            // Change course
+            changeCourseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                selectedCourseDisplay.classList.add('hidden');
+                selectedCourse = null;
+                document.querySelectorAll('.course-card').forEach(card => card.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-200'));
+                updateSubmitButton();
+            });
+
+            // Password strength
+            password.addEventListener('input', () => {
+                const value = password.value;
+                let strength = 0;
+                if (value.length >= 8) strength++;
+                if (value.match(/[A-Z]/)) strength++;
+                if (value.match(/[0-9]/)) strength++;
+                if (value.match(/[^A-Za-z0-9]/)) strength++;
+                strengthBars.forEach((bar, index) => {
+                    bar.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-green-500');
+                    if (index < strength) {
+                        bar.classList.add(strength <= 2 ? 'bg-red-500' : strength === 3 ? 'bg-yellow-500' : 'bg-green-500');
+                    } else {
+                        bar.classList.add('bg-gray-200');
+                    }
+                });
+                strengthText.textContent = value.length === 0 ? 'Password strength' :
+                    strength <= 2 ? 'Weak password' : strength === 3 ? 'Good password' : 'Strong password';
+                strengthText.classList.remove('text-red-500', 'text-yellow-500', 'text-green-500');
+                strengthText.classList.add(
+                    value.length === 0 ? 'text-gray-500' :
+                    strength <= 2 ? 'text-red-500' : strength === 3 ? 'text-yellow-500' : 'text-green-500'
+                );
+            });
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', () => {
+                const icon = togglePassword.querySelector('i');
+                password.type = password.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', password.type === 'password');
+                icon.classList.toggle('fa-eye-slash', password.type === 'text');
+            });
+
+            toggleConfirmPassword.addEventListener('click', () => {
+                const icon = toggleConfirmPassword.querySelector('i');
+                confirmPassword.type = confirmPassword.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', confirmPassword.type === 'password');
+                icon.classList.toggle('fa-eye-slash', confirmPassword.type === 'text');
+            });
+
+            // Form validation
+            const validateForm = () => {
+                let isValid = true;
+                if (!fullname.value.trim()) {
+                    showError(fullname, fullnameError, 'Please enter your full name');
+                    isValid = false;
+                } else {
+                    hideError(fullname, fullnameError);
+                    showValid(fullname, fullnameValid);
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim()) {
+                    showError(email, emailError, 'Please enter your email address');
+                    isValid = false;
+                } else if (!emailRegex.test(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                    isValid = false;
+                } else {
+                    hideError(email, emailError);
+                    showValid(email, emailValid);
+                }
+                const phoneRegex = /^(0|234)([7-9][01])\d{8}$/;
+                if (!phone.value.trim()) {
+                    showError(phone, phoneError, 'Please enter your phone number');
+                    isValid = false;
+                } else if (!phoneRegex.test(phone.value.replace(/\D/g, ''))) {
+                    showError(phone, phoneError, 'Please enter a valid Nigerian phone number');
+                    isValid = false;
+                } else {
+                    hideError(phone, phoneError);
+                    showValid(phone, phoneValid);
+                }
+                if (!password.value) {
+                    showError(password, passwordError, 'Please enter a password');
+                    isValid = false;
+                } else if (password.value.length < 8) {
+                    showError(password, passwordError, 'Password must be at least 8 characters');
+                    isValid = false;
+                } else {
+                    hideError(password, passwordError);
+                }
+                if (!confirmPassword.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Please confirm your password');
+                    isValid = false;
+                } else if (confirmPassword.value !== password.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                    isValid = false;
+                } else {
+                    hideError(confirmPassword, confirmPasswordError);
+                }
+                if (!skilledCourse.value) {
+                    showError(skilledCourse, skilledCourseError, 'Please select a course');
+                    isValid = false;
+                } else {
+                    hideError(skilledCourse, skilledCourseError);
+                    showValid(skilledCourse, skilledCourseValid);
+                }
+                return isValid;
+            };
+
+            // Real-time validation
+            fullname.addEventListener('input', debounce(() => {
+                if (!fullname.value.trim()) {
+                    showError(fullname, fullnameError, 'Please enter your full name');
+                } else {
+                    hideError(fullname, fullnameError);
+                    showValid(fullname, fullnameValid);
+                }
+            }, 300));
+            email.addEventListener('input', debounce(() => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim()) {
+                    showError(email, emailError, 'Please enter your email address');
+                } else if (!emailRegex.test(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                } else {
+                    hideError(email, emailError);
+                    showValid(email, emailValid);
+                }
+            }, 300));
+            phone.addEventListener('input', debounce(() => {
+                const phoneRegex = /^(0|234)([7-9][01])\d{8}$/;
+                if (!phone.value.trim()) {
+                    showError(phone, phoneError, 'Please enter your phone number');
+                } else if (!phoneRegex.test(phone.value.replace(/\D/g, ''))) {
+                    showError(phone, phoneError, 'Please enter a valid Nigerian phone number');
+                } else {
+                    hideError(phone, phoneError);
+                    showValid(phone, phoneValid);
+                }
+            }, 300));
+            confirmPassword.addEventListener('input', debounce(() => {
+                if (!confirmPassword.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Please confirm your password');
+                } else if (confirmPassword.value !== password.value) {
+                    showError(confirmPassword, confirmPasswordError, 'Passwords do not match');
+                } else {
+                    hideError(confirmPassword, confirmPasswordError);
+                }
+            }, 300));
+            skilledCourse.addEventListener('change', debounce(() => {
+                if (!skilledCourse.value) {
+                    showError(skilledCourse, skilledCourseError, 'Please select a course');
+                } else {
+                    hideError(skilledCourse, skilledCourseError);
+                    showValid(skilledCourse, skilledCourseValid);
+                }
+            }, 300));
+
+            // Clear errors on focus
+            [fullname, email, phone, password, confirmPassword, skilledCourse].forEach(input => {
+                input.addEventListener('focus', () => {
+                    hideError(input, input.nextElementSibling);
+                    if (input.nextElementSibling.nextElementSibling) {
+                        input.nextElementSibling.nextElementSibling.classList.remove('opacity-100', 'max-h-20');
+                    }
+                });
+            });
+
+            // Trap focus in modals
+            const trapFocus = (modal) => {
+                const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                modal.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey && document.activeElement === firstElement) {
+                            e.preventDefault();
+                            lastElement.focus();
+                        } else if (!e.shiftKey && document.activeElement === lastElement) {
+                            e.preventDefault();
+                            firstElement.focus();
+                        }
+                    }
+                });
+                firstElement.focus();
+            };
+
+            // Close modals
+            successModalBtn.addEventListener('click', () => {
+                successModal.classList.add('hidden');
+                form.reset();
+                selectedCourseDisplay.classList.add('hidden');
+                selectedCourse = null;
+                updateSubmitButton();
+                strengthBars.forEach(bar => bar.classList.add('bg-gray-200'));
+                strengthText.textContent = 'Password strength';
+                strengthText.classList.remove('text-red-500', 'text-yellow-500', 'text-green-500');
+            });
+            failureModalBtn.addEventListener('click', () => failureModal.classList.add('hidden'));
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    successModal.classList.add('hidden');
+                    failureModal.classList.add('hidden');
+                }
+            });
+
+            // Submit to Google Forms
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (validateForm() && selectedCourse) {
+                    submitBtn.disabled = true;
+                    submitSpinner.classList.remove('hidden');
+                    submitText.textContent = 'Submitting...';
+                    const formData = new FormData();
+                    formData.append('entry.1234567890', fullname.value); // Full Name
+                    formData.append('entry.0987654321', email.value); // Email
+                    formData.append('entry.1112223334', phone.value); // Phone
+                    formData.append('entry.4445556667', password.value); // Password
+                    formData.append('entry.7778889990', confirmPassword.value); // Confirm Password
+                    formData.append('entry.2223334445', selectedCourse); // Selected Course
+                    formData.append('entry.5556667778', skilledCourse.value); // Course You Are Skilled In
+                    fetch('https://docs.google.com/forms/d/e/[FORM_ID]/formResponse', {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: formData
+                    })
+                    .then(() => {
+                        submitSpinner.classList.add('hidden');
+                        submitText.textContent = 'Submit';
+                        loadingSpinner.style.display = 'none';
+                        successModal.classList.remove('hidden');
+                        trapFocus(successModal);
+                    })
+                    .catch((error) => {
+                        console.error('Submission error:', error);
+                        submitSpinner.classList.add('hidden');
+                        submitText.textContent = 'Submit';
+                        loadingSpinner.style.display = 'none';
+                        failureMessage.textContent = 'There was an issue submitting the form. Please try again.';
+                        failureModal.classList.remove('hidden');
+                        trapFocus(failureModal);
+                    });
+                } else {
+                    if (!selectedCourse) {
+                        selectedCourseDisplay.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+                        setTimeout(() => selectedCourseDisplay.classList.remove('border-red-500', 'ring-2', 'ring-red-200'), 1000);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
