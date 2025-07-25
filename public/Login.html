@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>S.M.A.R.T | Login</title>
+    <meta name="description" content="Log in to your S.M.A.R.T account to access your courses and manage your profile with Bliss.">
+    <meta name="keywords" content="S.M.A.R.T, Bliss, login, student dashboard, web development, tech education, Nigeria tech">
+    <meta name="author" content="Bliss, S.M.A.R.T">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="S.M.A.R.T | Login">
+    <meta property="og:description" content="Access your S.M.A.R.T student dashboard by logging in with Bliss.">
+    <meta property="og:image" content="https://yourdomain.com/logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="S.M.A.R.T by Bliss">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="S.M.A.R.T | Login">
+    <meta name="twitter:description" content="Log in to your S.M.A.R.T account to continue your tech journey with Bliss.">
+    <meta name="twitter:image" content="https://yourdomain.com/logo.png">
+
+    <!-- Favicon and Apple Touch Icon -->
+    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+
+    <!-- Styles and Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin: 16px 0;
+        }
+        .input-error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        .input-valid {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        .error-message {
+            opacity: 0;
+            max-height: 0;
+            font-size: 0.75rem;
+            color: #dc2626;
+            margin-top: 0.25rem;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+        }
+        .error-message.show {
+            opacity: 1;
+            max-height: 3rem;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+        .password-toggle:hover {
+            color: #4b5563;
+        }
+        .spinner {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .spinner-content {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        .spinner-circle {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #4f46e5;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        .spinner-text {
+            margin-top: 1rem;
+            font-size: 1rem;
+            color: #4f46e5;
+            font-family: 'Fira Code', monospace;
+        }
+        [data-animate="fade-in"] {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        [data-animate="fade-in"].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @media (max-width: 650px) {
+            .card {
+                padding: 16px;
+                margin: 8px 0;
+            }
+            .spinner-circle {
+                width: 32px;
+                height: 32px;
+            }
+            .spinner-text {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Spinner -->
+    <div id="loading-spinner" class="spinner">
+        <div class="spinner-content">
+            <div class="spinner-circle"></div>
+            <span class="spinner-text">S.M.A.R.T</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-indigo-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-book-open text-xl sm:text-2xl" aria-hidden="true"></i>
+                <span class="code
+
+System: -font text-lg sm:text-xl font-bold">S.M.A.R.T</span>
+            </div>
+            <div class="hidden md:flex space-x-4">
+                <a href="index.html" class="text-sm hover:text-indigo-200 transition">Home</a>
+                <a href="index.html#courses" class="text-sm hover:text-indigo-200 transition">Courses</a>
+                <a href="index.html#about" class="text-sm hover:text-indigo-200 transition">About</a>
+                <a href="index.html#contact" class="text-sm hover:text-indigo-200 transition">Contact</a>
+            </div>
+            <button id="mobile-menu-btn" aria-label="Toggle mobile menu" class="md:hidden text-xl focus:ring-2 focus:ring-indigo-500">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-indigo-700 px-4 sm:px-6 pb-4">
+            <a href="index.html" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Home</a>
+            <a href="index.html#courses" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Courses</a>
+            <a href="index.html#about" class="block py-2 text-sm text-white hover:text-indigo-200 transition">About</a>
+            <a href="index.html#contact" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <section class="max-w-md mx-auto" data-animate="fade-in">
+            <div class="card">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">Log In to S.M.A.R.T</h2>
+                <form id="login-form" class="space-y-4" novalidate>
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                        <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="zion@example.com" aria-describedby="email-error" required autofocus>
+                        <div class="error-message" id="email-error"></div>
+                        <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="email-valid">Looks good!</div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="relative">
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" name="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Enter your password" aria-describedby="password-error" required>
+                        <div class="password-toggle" id="toggle-password" aria-label="Toggle password visibility">
+                            <i class="far fa-eye" aria-hidden="true"></i>
+                        </div>
+                        <div class="error-message" id="password-error"></div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="login-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition flex items-center justify-center">
+                        <span>Log In</span>
+                        <svg id="login-spinner" class="hidden h-5 w-5 animate-spin text-white ml-2" viewBox="0 0 24 24" aria-hidden="true">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                    </button>
+                </form>
+                <div class="mt-4 text-center text-sm text-gray-500">
+                    <p>Don't have an account? <a href="index.html" class="text-indigo-600 hover:text-indigo-800 font-medium">Sign Up</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="success-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-check text-green-500 text-2xl" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h3 id="success-title" class="text-xl font-bold text-gray-800 mb-2">Login Successful!</h3>
+            <p class="text-gray-700 text-base mb-6">You are being redirected to your dashboard.</p>
+            <button id="success-modal-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition">Continue</button>
+        </div>
+    </div>
+
+    <!-- Failure Modal -->
+    <div id="failure-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="failure-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-times text-red-500 text-2xl" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h3 id="failure-title" class="text-xl font-bold text-gray-800 mb-2">Login Failed</h3>
+            <p class="text-gray-700 text-base mb-6" id="failure-message">Invalid email or password. Please try again.</p>
+            <button id="failure-modal-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition">Try Again</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const loginForm = document.getElementById('login-form');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            const emailValid = document.getElementById('email-valid');
+            const loginBtn = document.getElementById('login-btn');
+            const loginSpinner = document.getElementById('login-spinner');
+            const successModal = document.getElementById('success-modal');
+            const failureModal = document.getElementById('failure-modal');
+            const successModalBtn = document.getElementById('success-modal-btn');
+            const failureModalBtn = document.getElementById('failure-modal-btn');
+            const failureMessage = document.getElementById('failure-message');
+            const togglePassword = document.getElementById('toggle-password');
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const loadingSpinner = document.getElementById('loading-spinner');
+
+            // Debounce utility
+            const debounce = (func, wait) => {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            };
+
+            // Show/Hide Error
+            const showError = (input, errorElement, message) => {
+                input.classList.add('input-error', 'shake');
+                input.classList.remove('input-valid');
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+                setTimeout(() => input.classList.remove('shake'), 500);
+            };
+
+            const hideError = (input, errorElement) => {
+                input.classList.remove('input-error', 'shake');
+                errorElement.classList.remove('show');
+            };
+
+            const showValid = (input, validElement) => {
+                input.classList.add('input-valid');
+                input.classList.remove('input-error', 'shake');
+                validElement.classList.add('opacity-100', 'max-h-20');
+                input.nextElementSibling.classList.remove('show');
+            };
+
+            // Validate login form
+            const validateLoginForm = () => {
+                let isValid = true;
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim()) {
+                    showError(email, emailError, 'Please enter your email address');
+                    isValid = false;
+                } else if (!emailRegex.test(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                    isValid = false;
+                } else {
+                    hideError(email, emailError);
+                    showValid(email, emailValid);
+                }
+                if (!password.value) {
+                    showError(password, passwordError, 'Please enter your password');
+                    isValid = false;
+                } else {
+                    hideError(password, passwordError);
+                }
+                return isValid;
+            };
+
+            // Check credentials
+            const checkCredentials = () => {
+                const users = JSON.parse(localStorage.getItem('smart_users') || '[]');
+                const user = users.find(u => u.email === email.value && u.password === password.value);
+                return user;
+            };
+
+            // Real-time validation
+            email.addEventListener('input', debounce(() => {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value.trim()) {
+                    showError(email, emailError, 'Please enter your email address');
+                } else if (!emailRegex.test(email.value)) {
+                    showError(email, emailError, 'Please enter a valid email address');
+                } else {
+                    hideError(email, emailError);
+                    showValid(email, emailValid);
+                }
+            }, 300));
+
+            password.addEventListener('input', debounce(() => {
+                if (!password.value) {
+                    showError(password, passwordError, 'Please enter your password');
+                } else {
+                    hideError(password, passwordError);
+                }
+            }, 300));
+
+            // Clear errors on focus
+            [email, password].forEach(input => {
+                input.addEventListener('focus', () => {
+                    hideError(input, input.nextElementSibling);
+                    if (input.nextElementSibling.nextElementSibling) {
+                        input.nextElementSibling.nextElementSibling.classList.remove('opacity-100', 'max-h-20');
+                    }
+                });
+            });
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', () => {
+                const icon = togglePassword.querySelector('i');
+                password.type = password.type === 'password' ? 'text' : 'password';
+                icon.classList.toggle('fa-eye', password.type === 'password');
+                icon.classList.toggle('fa-eye-slash', password.type === 'text');
+            });
+
+            // Login form submission
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (validateLoginForm()) {
+                    loginBtn.disabled = true;
+                    loginSpinner.classList.remove('hidden');
+                    loginBtn.querySelector('span').classList.add('hidden');
+                    loadingSpinner.style.display = 'flex';
+                    setTimeout(() => {
+                        const user = checkCredentials();
+                        loginBtn.disabled = false;
+                        loginSpinner.classList.add('hidden');
+                        loginBtn.querySelector('span').classList.remove('hidden');
+                        loadingSpinner.style.display = 'none';
+                        if (user) {
+                            localStorage.setItem('current_user_email', email.value);
+                            successModal.classList.remove('hidden');
+                            trapFocus(successModal);
+                        } else {
+                            failureMessage.textContent = 'Invalid email or password. Please try again.';
+                            failureModal.classList.remove('hidden');
+                            trapFocus(failureModal);
+                        }
+                    }, 1000); // Simulate async operation
+                } else {
+                    failureMessage.textContent = 'Please fix the errors in the form.';
+                    failureModal.classList.remove('hidden');
+                    trapFocus(failureModal);
+                }
+            });
+
+            // Trap focus in modals
+            const trapFocus = (modal) => {
+                const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+                modal.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey && document.activeElement === firstElement) {
+                            e.preventDefault();
+                            lastElement.focus();
+                        } else if (!e.shiftKey && document.activeElement === lastElement) {
+                            e.preventDefault();
+                            firstElement.focus();
+                        }
+                    }
+                });
+                firstElement.focus();
+            };
+
+            // Close modals
+            successModalBtn.addEventListener('click', () => {
+                successModal.classList.add('hidden');
+                window.location.href = 'dashboard.html'; // Redirect to dashboard
+            });
+            failureModalBtn.addEventListener('click', () => failureModal.classList.add('hidden'));
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    successModal amicoModal.classList.add('hidden');
+                    failureModal.classList.add('hidden');
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+                    mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+                }
+            });
+
+            // Mobile menu toggle
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                const isOpen = !mobileMenu.classList.contains('hidden');
+                mobileMenuBtn.querySelector('i').classList.toggle('fa-bars', !isOpen);
+                mobileMenuBtn.querySelector('i').classList.toggle('fa-times', isOpen);
+            });
+
+            // Intersection Observer for fade-in animations
+            const animateOnScroll = () => {
+                const elements = document.querySelectorAll('[data-animate="fade-in"]');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.2 });
+                elements.forEach(el => observer.observe(el));
+            };
+
+            // Initialize ZION
+            animateOnScroll();
+        });
+    </script>
+</body>
+</html>

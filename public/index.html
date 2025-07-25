@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>S.M.A.R.T | Learn Tech with Bliss</title>
+    <meta name="description" content="Join S.M.A.R.T by Bliss to master web and full-stack development through expert-led courses and personalized tutoring. Start your tech journey today!">
+    <meta name="keywords" content="S.M.A.R.T, Bliss, web development, full-stack development, tech education, programming courses, Nigeria tech">
+    <meta name="author" content="Bliss, S.M.A.R.T">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="S.M.A.R.T | Learn Web & Full-Stack Development with Bliss">
+    <meta property="og:description" content="Transform your career with S.M.A.R.T's expert-led courses in web and full-stack development. Enroll now for hands-on learning and mentorship!">
+    <meta property="og:image" content="https://yourdomain.com/logo.png">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="S.M.A.R.T by Bliss">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="S.M.A.R.T | Learn Tech with Bliss">
+    <meta name="twitter:description" content="Join S.M.A.R.T for expert-led web and full-stack development courses by Bliss. Start your tech journey today!">
+    <meta name="twitter:image" content="https://yourdomain.com/logo.png">
+
+    <!-- Favicon and Apple Touch Icon -->
+    <link rel="icon" type="image/png" href="/logo.png">
+    <link rel="apple-touch-icon" href="/favicon.ico">
+
+    <!-- Styles and Scripts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .password-strength {
+            height: 4px;
+            transition: all 0.3s ease;
+        }
+        .course-card {
+            transition: all 0.3s ease-in-out;
+        }
+        .course-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .input-error {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+        .input-valid {
+            border-color: #10b981;
+        }
+        .error-message {
+            opacity: 0;
+            max-height: 0;
+            transition: all 0.3s ease;
+        }
+        .error-message.show {
+            opacity: 1;
+            max-height: 5rem;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        .password-toggle:hover {
+            color: #4b5563;
+        }
+        .spinner {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            display: none;
+        }
+        .spinner-content {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .spinner-circle {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #4f46e5;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .spinner-text {
+            margin-top: 16px;
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #4f46e5;
+            font-family: 'Fira Code', monospace;
+        }
+        [data-animate="fade-in"] {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        [data-animate="fade-in"].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #whatsapp-btn:active {
+            transform: scale(0.95);
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Spinner -->
+    <div id="loading-spinner" class="spinner">
+        <div class="spinner-content">
+            <div class="spinner-circle"></div>
+            <span class="spinner-text">S.M.A.R.T</span>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-indigo-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-book-open text-xl sm:text-2xl" aria-hidden="true"></i>
+                <span class="code-font text-lg sm:text-xl font-bold">S.M.A.R.T</span>
+            </div>
+            <div class="hidden md:flex space-x-4">
+                <a href="#courses" class="text-sm hover:text-indigo-200 transition">Courses</a>
+                <a href="#about" class="text-sm hover:text-indigo-200 transition">About</a>
+                <a href="#contact" class="text-sm hover:text-indigo-200 transition">Contact</a>
+                <a href="./src/tutor.html" class="text-sm hover:text-indigo-200 transition">Tutor</a>
+                <a href="./login.html" class="text-sm hover:text-indigo-200 transition">Log In</a> <!-- Added Log In link -->
+            </div>
+            <button id="mobile-menu-btn" aria-label="Toggle mobile menu" class="md:hidden text-xl focus:ring-2 focus:ring-indigo-500">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-indigo-700 px-4 sm:px-6 pb-4">
+            <a href="#courses" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Courses</a>
+            <a href="#about" class="block py-2 text-sm text-white hover:text-indigo-200 transition">About</a>
+            <a href="#contact" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Contact</a>
+            <a href="./tutor.html" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Tutor</a>
+            <a href="./login.html" class="block py-2 text-sm text-white hover:text-indigo-200 transition">Log In</a> <!-- Added Log In link -->
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section 
+        class="relative text-white py-12 sm:py-16"
+        style="background-image: url('./tutor-dashboard/src/Screenshot 2025-07-19 122714.png'); background-size: cover; background-position: center;"
+    >
+        <div class="absolute inset-0 bg-gradient-to-r from-indigo-700/70 to-purple-700/70 z-0"></div>
+        <div class="container mx-auto px-4 sm:px-6 relative z-10">
+            <div class="max-w-3xl mx-auto text-center" data-animate="fade-in">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Start Your Tech Journey with S.M.A.R.T</h1>
+                <p class="text-base sm:text-lg md:text-xl mb-6 sm:mb-8">
+                    Join our expert-led courses by Bliss and transform your career in tech.
+                </p>
+                <a href="#courses" class="bg-white text-indigo-700 font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-indigo-100 transition duration-300 inline-block">
+                    Explore Courses
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div class="flex flex-col lg:flex-row gap-6 sm:gap-8">
+            <!-- Courses Section -->
+            <section id="courses" class="lg:w-1/2">
+                <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">Our Featured Courses</h2>
+                <p class="text-gray-700 text-sm sm:text-base mb-6 sm:mb-8">Select a course to begin your enrollment process. All courses include lifetime access and a certificate.</p>
+                
+                <div class="space-y-4 sm:space-y-6">
+                    <!-- Course 1: Frontend -->
+                    <div class="course-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                        <div class="p-4 sm:p-6 flex items-start space-x-4">
+                            <i class="fas fa-code text-indigo-600 text-xl sm:text-2xl" aria-hidden="true"></i>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Web Development (Frontend)</h3>
+                                <p class="text-gray-700 text-sm sm:text-base mb-4">Master HTML, CSS, and JavaScript to build stunning, responsive websites.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex items-center justify-between border-t border-gray-100">
+                            <span class="text-xl sm:text-2xl font-bold text-gray-800">₦3,000</span>
+                            <button class="select-course-btn bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium py-2 px-4 sm:px-6 rounded-lg transition" data-course="frontend" data-price="3000" data-icon="fa-code">Select Course</button>
+                        </div>
+                    </div>
+
+                    <!-- Course 2: Full-Stack -->
+                    <div class="course-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                        <div class="p-4 sm:p-6 flex items-start space-x-4">
+                            <i class="fas fa-server text-indigo-600 text-xl sm:text-2xl" aria-hidden="true"></i>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Full-Stack Development</h3>
+                                <p class="text-gray-700 text-sm sm:text-base mb-4">Build complete web apps with HTML, CSS, JavaScript, Node.js, and databases.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex items-center justify-between border-t border-gray-100">
+                            <span class="text-xl sm:text-2xl font-bold text-gray-800">₦3,000</span>
+                            <button class="select-course-btn bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium py-2 px-4 sm:px-6 rounded-lg transition" data-course="fullstack" data-price="3000" data-icon="fa-server">Select Course</button>
+                        </div>
+                    </div>
+
+                    <!-- Course 3: Backend -->
+                    <div class="course-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                        <div class="p-4 sm:p-6 flex items-start space-x-4">
+                            <i class="fas fa-code text-indigo-600 text-xl sm:text-2xl" aria-hidden="true"></i>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Web Development (Backend)</h3>
+                                <p class="text-gray-700 text-sm sm:text-base mb-4">Master Node.js and API integrations to build responsive websites.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex items-center justify-between border-t border-gray-100">
+                            <span class="text-xl sm:text-2xl font-bold text-gray-800">₦3,000</span>
+                            <button class="select-course-btn bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium py-2 px-4 sm:px-6 rounded-lg transition" data-course="backend" data-price="3000" data-icon="fa-code">Select Course</button>
+                        </div>
+                    </div>
+
+                    <!-- Course 4: UI/UX -->
+                    <div class="course-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+                        <div class="p-4 sm:p-6 flex items-start space-x-4">
+                            <i class="fas fa-paint-brush text-indigo-600 text-xl sm:text-2xl" aria-hidden="true"></i>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">UI/UX Engineering</h3>
+                                <p class="text-gray-700 text-sm sm:text-base mb-4">Make your sites more aesthetic and user-friendly with modern design principles.</p>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 flex items-center justify-between border-t border-gray-100">
+                            <span class="text-xl sm:text-2xl font-bold text-gray-800">₦1,000</span>
+                            <button class="select-course-btn bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium py-2 px-4 sm:px-6 rounded-lg transition" data-course="uiux" data-price="1000" data-icon="fa-paint-brush">Select Course</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Signup Form Section -->
+            <section class="lg:w-1/2">
+                <div class="bg-white rounded-xl shadow-md p-4 sm:p-6 sticky top-4">
+                    <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">Enrollment Form</h2>
+                    
+                    <div id="selected-course-display" class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-4 sm:mb-6 rounded hidden">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-indigo-800 text-sm sm:text-base" id="selected-course-name">Course Name</h3>
+                                <p class="text-indigo-600 text-sm">Price: <span id="selected-course-price" class="font-bold">₦0</span></p>
+                            </div>
+                            <button id="change-course-btn" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm">Change</button>
+                        </div>
+                    </div>
+
+                    <form id="signup-form" class="space-y-4" novalidate>
+                        <!-- Full Name -->
+                        <div>
+                            <label for="fullname" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                            <input type="text" id="fullname" name="fullname" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Your Name" aria-describedby="fullname-error" required autofocus>
+                            <div class="error-message" id="fullname-error">Please enter your full name</div>
+                            <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="fullname-valid">Looks good!</div>
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="zion@example.com" aria-describedby="email-error" required>
+                            <div class="error-message" id="email-error">Please enter a valid email address</div>
+                            <div class="valid-message text-sm text-green-600 mt-1 opacity-0omatis
+                                max-h-0 transition-all" id="email-valid">Looks good!</div>
+                        </div>
+
+                        <!-- Phone -->
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="08012345678" aria-describedby="phone-error" required>
+                            <div class="error-message" id="phone-error">Please enter a valid Nigerian phone number</div>
+                            <div class="valid-message text-sm text-green-600 mt-1 opacity-0 max-h-0 transition-all" id="phone-valid">Looks good!</div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="relative">
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="password" name="password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="At least 8 characters" aria-describedby="password-error" required>
+                            <div class="password-toggle" id="toggle-password">
+                                <i class="far fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="error-message" id="password-error">Password must be at least 8 characters</div>
+                            <div class="mt-2">
+                                <div class="flex space-x-1">
+                                    <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-1"></div>
+                                    <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-2"></div>
+                                    <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-3"></div>
+                                    <div class="password-strength w-1/4 bg-gray-200 rounded" id="strength-4"></div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1" id="password-strength-text">Password strength</p>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div class="relative">
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                            <input type="password" id="confirm-password" name="confirm-password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" placeholder="Confirm your password" aria-describedby="confirm-password-error" required>
+                            <div class="password-toggle" id="toggle-confirm-password">
+                                <i class="far fa-eye" aria-hidden="true"></i>
+                            </div>
+                            <div class="error-message" id="confirm-password-error">Passwords do not match</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-4">
+                            <button type="submit" id="submit-btn" class="w-full bg-gray-300 text-gray-500 font-bold py-3 px-4 rounded-lg cursor-not-allowed flex items-center justify-center" disabled>
+                                <span id="submit-text">Select a course to continue</span>
+                                <svg id="submit-spinner" class="hidden h-5 w-5 animate-spin text-white ml-2" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 sm:mt-6 text-center text-sm text-gray-500">
+                        <p>Already have an account? <a href="./login.html" class="text-indigo-600 hover:text-indigo-800 font-medium">Log in</a></p> <!-- Updated Log In link -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="payment-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="payment-title" class="text-lg sm:text-xl font-bold text-gray-800">Confirm Payment</h3>
+                <button id="close-modal" aria-label="Close payment modal" class="text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-indigo-500">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <p class="text-gray-700 text-sm sm:text-base mb-2">You're about to pay <span id="payment-amount" class="font-bold text-indigo-700">₦0</span> for:</p>
+                <p class="font-medium text-sm sm:text-base" id="payment-course-name">Course Name</p>
+            </div>
+            <button id="proceed-payment-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center">
+                <span>Proceed to Payment</span>
+                <svg id="payment-spinner" class="hidden h-5 w-5 animate-spin text-white ml-2" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="success-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-check text-green-500 text-xl sm:text-2xl" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h3 id="success-title" class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Payment Successful!</h3>
+            <p class="text-gray-700 text-sm sm:text-base mb-6">Thank you for enrolling. Check your email for access details.</p>
+            <button id="success-modal-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3 px-4 rounded-lg transition">Continue to Dashboard</button>
+        </div>
+    </div>
+
+    <!-- Failure Modal -->
+    <div id="failure-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden overflow-y-auto" role="dialog" aria-labelledby="failure-title" aria-modal="true">
+        <div class="bg-white rounded-xl p-4 sm:p-6 max-w-md w-full mx-4 text-center">
+            <div class="mb-4">
+                <div class="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                    <i class="fas fa-times text-red-500 text-xl sm:text-2xl" aria-hidden="true"></i>
+                </div>
+            </div>
+            <h3 id="failure-title" class="text-lg sm:text-xl font-bold text-gray-800 mb-2">Payment Failed</h3>
+            <p class="text-gray-700 text-sm sm:text-base mb-6" id="failure-message">There was an issue processing your payment. Please try again or contact support.</p>
+            <button id="failure-modal-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3 px-4 rounded-lg transition">Try Again</button>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div class="max-w-4xl mx-auto text-center" data-animate="fade-in">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">About S.M.A.R.T</h2>
+            <p class="text-gray-700 text-sm sm:text-base mb-6">
+                S.M.A.R.T (Student Mentoring and Academic Resource Tutorship) was born from Bliss's passion to transform tech education. Recognizing the challenges students face in accessing quality learning and effective tutoring, Bliss envisioned a platform where aspiring developers could receive hands-on, expert-led guidance to master in-demand skills.
+            </p>
+            <p class="text-gray-700 text-sm sm:text-base mb-6">
+                Through S.M.A.R.T, Bliss ensures every student gets personalized mentorship and practical training, empowering them to excel in the tech industry with confidence and competence.
+            </p>
+            <a href="#courses" class="inline-block bg-indigo-600 text-white font-bold py-2 sm:py-3 px-6 sm:px-8 rounded-full hover:bg-indigo-700 transition duration-300 transform hover:scale-105">Join Our Community</a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="container mx-auto px-4 sm:px-6 py-12 sm:py-16 bg-gray-100">
+        <div class="max-w-2xl mx-auto text-center" data-animate="fade-in">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">Get in Touch</h2>
+            <p class="text-gray-700 text-sm sm:text-base mb-6 sm:mb-8">
+                Have questions or need support? Connect with us directly on WhatsApp for quick and personalized assistance.
+            </p>
+            <a href="https://wa.me/2348036991353" id="whatsapp-btn" target="_blank" rel="noopener noreferrer" class="inline-block bg-green-500 text-white font-bold py-3 px-8 rounded-full hover:bg-green-600 transition duration-300 transform hover:scale-105 focus:ring-2 focus:ring-green-400">
+                <i class="fab fa-whatsapp mr-2" aria-hidden="true"></i> Chat with Us on WhatsApp
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 sm:py-8">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="flex flex-col sm:flex-row justify-between">
+                <div class="mb-6 sm:mb-0">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-book-open text-xl sm:text-2xl" aria-hidden="true"></i>
+                        <span class="code-font text-lg sm:text-xl font-bold">S.M.A.R.T</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">Empowering the next generation of developers with Bliss.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 sm:gap-8">
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider mb-4">Courses</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#courses" class="text-gray-400 hover:text-white transition">Web Development (Frontend)</a></li>
+                            <li><a href="#courses" class="text-gray-400 hover:text-white transition">Web Development (Backend)</a></li>
+                            <li><a href="#courses" class="text-gray-400 hover:text-white transition">UI/UX Engineering</a></li>
+                            <li><a href="#courses" class="text-gray-400 hover:text-white transition">Full-Stack Development</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider mb-4">Company</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#about" class="text-gray-400 hover:text-white transition">About</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white transition">Careers</a></li>
+                            <li><a href="#contact" class="text-gray-400 hover:text-white transition">Contact</a></li>
+                            <li><a href="./login.html" class="text-gray-400 hover:text-white transition">Log In</a></li> <!-- Added Log In link -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-6 sm:mt-8 pt-6 text-center text-gray-400 text-xs">
+                <p>© 2025 S.M.A.R.T - Student Mentoring and Academic Resource Tutorship by Bliss.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Flutterwave Script -->
+    <script defer src="https://checkout.flutterwave.com/v3.js"></script>
+    
+    <!-- JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Elements
+        const studentName = document.getElementById('student-name');
+        const courseCount = document.getElementById('course-count');
+        const enrolledCourses = document.getElementById('enrolled-courses');
+        const profileForm = document.getElementById('profile-form');
+        const profileFullname = document.getElementById('profile-fullname');
+        const profileEmail = document.getElementById('profile-email');
+        const profilePhone = document.getElementById('profile-phone');
+        const profilePassword = document.getElementById('profile-password');
+        const profileConfirmPassword = document.getElementById('profile-confirm-password');
+        const profileFullnameError = document.getElementById('profile-fullname-error');
+        const profileEmailError = document.getElementById('profile-email-error');
+        const profilePhoneError = document.getElementById('profile-phone-error');
+        const profilePasswordError = document.getElementById('profile-password-error');
+        const profileConfirmPasswordError = document.getElementById('profile-confirm-password-error');
+        const profileFullnameValid = document.getElementById('profile-fullname-valid');
+        const profileEmailValid = document.getElementById('profile-email-valid');
+        const profilePhoneValid = document.getElementById('profile-phone-valid');
+        const profileSubmitBtn = document.getElementById('profile-submit-btn');
+        const profileSubmitSpinner = document.getElementById('profile-submit-spinner');
+        const successModal = document.getElementById('success-modal');
+        const failureModal = document.getElementById('failure-modal');
+        const successModalBtn = document.getElementById('success-modal-btn');
+        const failureModalBtn = document.getElementById('failure-modal-btn');
+        const successMessage = document.getElementById('success-message');
+        const failureMessage = document.getElementById('failure-message');
+        const toggleProfilePassword = document.getElementById('toggle-profile-password');
+        const toggleProfileConfirmPassword = document.getElementById('toggle-profile-confirm-password');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const logoutBtn = document.getElementById('logout-btn');
+        const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        // Get current user from localStorage
+        const currentUserEmail = localStorage.getItem('current_user_email');
+        const users = JSON.parse(localStorage.getItem('smart_users') || '[]');
+        const user = users.find(u => u.email === currentUserEmail) || {
+            name: 'Guest',
+            email: '',
+            phone: '',
+            courses: []
+        };
+
+        // Redirect to login if no user is found
+        if (!currentUserEmail || !user.email) {
+            window.location.href = 'login.html';
+        }
+
+        // Initialize dashboard
+        const initDashboard = () => {
+            studentName.textContent = user.name;
+            courseCount.textContent = user.courses.length;
+            profileFullname.value = user.name;
+            profileEmail.value = user.email;
+            profilePhone.value = user.phone;
+            renderCourses();
+        };
+
+        // Render enrolled courses
+        const renderCourses = () => {
+            enrolledCourses.innerHTML = user.courses.length === 0 ? '<p class="text-gray-700 text-sm">You are not enrolled in any courses yet.</p>' : '';
+            user.courses.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = 'course-card bg-white rounded-xl shadow-md overflow-hidden border border-gray-200';
+                courseCard.innerHTML = `
+                    <div class="p-4 sm:p-6 flex items-start space-x-4">
+                        <i class="fas ${course.icon} text-indigo-600 text-xl sm:text-2xl" aria-hidden="true"></i>
+                        <div class="flex-1">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">${course.name}</h3>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: ${course.progress}%"></div>
+                            </div>
+                            <p class="text-gray-700 text-sm sm:text-base">Progress: ${course.progress}%</p>
+                        </div>
+                    </div>
+                    <div class="p-4 sm:p-6 border-t border-gray-100">
+                        <button class="access-course-btn bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 sm:px-6 rounded-lg transition" data-course="${course.id}">Access Course</button>
+                    </div>
+                `;
+                enrolledCourses.appendChild(courseCard);
+            });
+        };
+
+        // Debounce utility
+        const debounce = (func, wait) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        };
+
+        // Show/Hide Error
+        const showError = (input, errorElement, message) => {
+            input.classList.add('input-error', 'shake');
+            input.classList.remove('input-valid');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+            setTimeout(() => input.classList.remove('shake'), 500);
+        };
+
+        const hideError = (input, errorElement) => {
+            input.classList.remove('input-error', 'shake');
+            errorElement.classList.remove('show');
+        };
+
+        const showValid = (input, validElement) => {
+            input.classList.add('input-valid');
+            input.classList.remove('input-error', 'shake');
+            validElement.classList.add('opacity-100', 'max-h-20');
+            input.nextElementSibling.classList.remove('show');
+        };
+
+        // Profile validation
+        const validateProfileForm = () => {
+            let isValid = true;
+            if (!profileFullname.value.trim()) {
+                showError(profileFullname, profileFullnameError, 'Please enter your full name');
+                isValid = false;
+            } else {
+                hideError(profileFullname, profileFullnameError);
+                showValid(profileFullname, profileFullnameValid);
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!profileEmail.value.trim()) {
+                showError(profileEmail, profileEmailError, 'Please enter your email address');
+                isValid = false;
+            } else if (!emailRegex.test(profileEmail.value)) {
+                showError(profileEmail, profileEmailError, 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                hideError(profileEmail, profileEmailError);
+                showValid(profileEmail, profileEmailValid);
+            }
+            const phoneRegex = /^(0|234)([7-9][01])\d{8}$/;
+            if (!profilePhone.value.trim()) {
+                showError(profilePhone, profilePhoneError, 'Please enter your phone number');
+                isValid = false;
+            } else if (!phoneRegex.test(profilePhone.value.replace(/\D/g, ''))) {
+                showError(profilePhone, profilePhoneError, 'Please enter a valid Nigerian phone number');
+                isValid = false;
+            } else {
+                hideError(profilePhone, profilePhoneError);
+                showValid(profilePhone, profilePhoneValid);
+            }
+            if (profilePassword.value && profilePassword.value.length < 8) {
+                showError(profilePassword, profilePasswordError, 'Password must be at least 8 characters');
+                isValid = false;
+            } else {
+                hideError(profilePassword, profilePasswordError);
+            }
+            if (profilePassword.value && profileConfirmPassword.value !== profilePassword.value) {
+                showError(profileConfirmPassword, profileConfirmPasswordError, 'Passwords do not match');
+                isValid = false;
+            } else if (profilePassword.value && !profileConfirmPassword.value) {
+                showError(profileConfirmPassword, profileConfirmPasswordError, 'Please confirm your password');
+                isValid = false;
+            } else {
+                hideError(profileConfirmPassword, profileConfirmPasswordError);
+            }
+            return isValid;
+        };
+
+        // Real-time validation
+        profileFullname.addEventListener('input', debounce(() => {
+            if (!profileFullname.value.trim()) {
+                showError(profileFullname, profileFullnameError, 'Please enter your full name');
+            } else {
+                hideError(profileFullname, profileFullnameError);
+                showValid(profileFullname, profileFullnameValid);
+            }
+        }, 300));
+        profileEmail.addEventListener('input', debounce(() => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!profileEmail.value.trim()) {
+                showError(profileEmail, profileEmailError, 'Please enter your email address');
+            } else if (!emailRegex.test(profileEmail.value)) {
+                showError(profileEmail, profileEmailError, 'Please enter a valid email address');
+            } else {
+                hideError(profileEmail, profileEmailError);
+                showValid(profileEmail, profileEmailValid);
+            }
+        }, 300));
+        profilePhone.addEventListener('input', debounce(() => {
+            const phoneRegex = /^(0|234)([7-9][01])\d{8}$/;
+            if (!profilePhone.value.trim()) {
+                showError(profilePhone, profilePhoneError, 'Please enter your phone number');
+            } else if (!phoneRegex.test(profilePhone.value.replace(/\D/g, ''))) {
+                showError(profilePhone, profilePhoneError, 'Please enter a valid Nigerian phone number');
+            } else {
+                hideError(profilePhone, profilePhoneError);
+                showValid(profilePhone, profilePhoneValid);
+            }
+        }, 300));
+        profileConfirmPassword.addEventListener('input', debounce(() => {
+            if (profilePassword.value && profileConfirmPassword.value !== profilePassword.value) {
+                showError(profileConfirmPassword, profileConfirmPasswordError, 'Passwords do not match');
+            } else if (profilePassword.value && !profileConfirmPassword.value) {
+                showError(profileConfirmPassword, profileConfirmPasswordError, 'Please confirm your password');
+            } else {
+                hideError(profileConfirmPassword, profileConfirmPasswordError);
+            }
+        }, 300));
+
+        // Clear errors on focus
+        [profileFullname, profileEmail, profilePhone, profilePassword, profileConfirmPassword].forEach(input => {
+            input.addEventListener('focus', () => {
+                hideError(input, input.nextElementSibling);
+                if (input.nextElementSibling.nextElementSibling) {
+                    input.nextElementSibling.nextElementSibling.classList.remove('opacity-100', 'max-h-20');
+                }
+            });
+        });
+
+        // Toggle password visibility
+        toggleProfilePassword.addEventListener('click', () => {
+            const icon = toggleProfilePassword.querySelector('i');
+            profilePassword.type = profilePassword.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('fa-eye', profilePassword.type === 'password');
+            icon.classList.toggle('fa-eye-slash', profilePassword.type === 'text');
+        });
+        toggleProfileConfirmPassword.addEventListener('click', () => {
+            const icon = toggleProfileConfirmPassword.querySelector('i');
+            profileConfirmPassword.type = profileConfirmPassword.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('fa-eye', profileConfirmPassword.type === 'password');
+            icon.classList.toggle('fa-eye-slash', profileConfirmPassword.type === 'text');
+        });
+
+        // Profile form submission
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (validateProfileForm()) {
+                profileSubmitBtn.disabled = true;
+                profileSubmitSpinner.classList.remove('hidden');
+                profileSubmitBtn.querySelector('span').classList.add('hidden');
+                loadingSpinner.style.display = 'flex';
+                setTimeout(() => {
+                    // Update user data in localStorage
+                    const users = JSON.parse(localStorage.getItem('smart_users') || '[]');
+                    const userIndex = users.findIndex(u => u.email === currentUserEmail);
+                    if (userIndex >= 0) {
+                        users[userIndex].name = profileFullname.value;
+                        users[userIndex].email = profileEmail.value;
+                        users[userIndex].phone = profilePhone.value;
+                        if (profilePassword.value) {
+                            users[userIndex].password = profilePassword.value; // Insecure; use backend in production
+                        }
+                        localStorage.setItem('smart_users', JSON.stringify(users));
+                        localStorage.setItem('current_user_email', profileEmail.value); // Update current user email
+                    }
+                    user.name = profileFullname.value;
+                    user.email = profileEmail.value;
+                    user.phone = profilePhone.value;
+                    studentName.textContent = user.name;
+                    profileSubmitBtn.disabled = false;
+                    profileSubmitSpinner.classList.add('hidden');
+                    profileSubmitBtn.querySelector('span').classList.remove('hidden');
+                    loadingSpinner.style.display = 'none';
+                    successMessage.textContent = 'Your profile has been updated.';
+                    successModal.classList.remove('hidden');
+                    trapFocus(successModal);
+                }, 1000); // Simulate async operation
+            } else {
+                failureMessage.textContent = 'Please fix the errors in the form.';
+                failureModal.classList.remove('hidden');
+                trapFocus(failureModal);
+            }
+        });
+
+        // Access course
+        enrolledCourses.addEventListener('click', (e) => {
+            if (e.target.classList.contains('access-course-btn')) {
+                const courseId = e.target.dataset.course;
+                loadingSpinner.style.display = 'flex';
+                setTimeout(() => {
+                    loadingSpinner.style.display = 'none';
+                    successMessage.textContent = `Accessing course: ${user.courses.find(c => c.id === courseId).name}. Redirecting to course content...`;
+                    successModal.classList.remove('hidden');
+                    trapFocus(successModal);
+                }, 1000); // Simulate async operation
+            }
+        });
+
+        // Logout
+        [logoutBtn, mobileLogoutBtn].forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                loadingSpinner.style.display = 'flex';
+                setTimeout(() => {
+                    localStorage.removeItem('current_user_email');
+                    loadingSpinner.style.display = 'none';
+                    window.location.href = 'login.html'; // Redirect to login
+                }, 1000); // Simulate async operation
+            });
+        });
+
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            const isOpen = !mobileMenu.classList.contains('hidden');
+            mobileMenuBtn.querySelector('i').classList.toggle('fa-bars', !isOpen);
+            mobileMenuBtn.querySelector('i').classList.toggle('fa-times', isOpen);
+        });
+
+        // Trap focus in modals
+        const trapFocus = (modal) => {
+            const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+            modal.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === firstElement) {
+                        e.preventDefault();
+                        lastElement.focus();
+                    } else if (!e.shiftKey && document.activeElement === lastElement) {
+                        e.preventDefault();
+                        firstElement.focus();
+                    }
+                }
+            });
+            firstElement.focus();
+        };
+
+        // Close modals
+        successModalBtn.addEventListener('click', () => successModal.classList.add('hidden'));
+        failureModalBtn.addEventListener('click', () => failureModal.classList.add('hidden'));
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                successModal.classList.add('hidden');
+                failureModal.classList.add('hidden');
+                mobileMenu.classList.add('hidden');
+                mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+                mobileMenuBtn.querySelector('i').classList.remove('fa-times');
+            }
+        });
+
+        // Intersection Observer for fade-in animations
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('[data-animate="fade-in"]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            elements.forEach(el => observer.observe(el));
+        };
+
+        // Initialize
+        initDashboard();
+        animateOnScroll();
+    });
+</script>
+</body>
+</html>
